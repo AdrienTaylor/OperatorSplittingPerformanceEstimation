@@ -6,6 +6,8 @@ This code comes jointly with the following [`reference`](...).
 
 Date:    ....
 
+TODO:
+update 1/L to beta in matlab code
 
 
 #### Authors
