@@ -27,21 +27,21 @@ theta_value = 1;
 
 AisNonZero  = 1;    % is A active ? [0/1]
 AisSub      = 1;    % is A a subdifferential ? [0/1]
-Acoco_value = Inf;  % assumed L>0 (possibly Inf)
+Acoco_value = 0;    % assumed beta>=0 (possibly 0)
 Alips_value = Inf;  % assumed L>0 (possibly Inf)
-Astrm_value = 0;    % assumed m<L (possibly 0)
+Astrm_value = 0;    % assumed m<min(L,1/beta) (possibly 0)
 
 BisNonZero  = 1;    % is B active ? [0/1]
 BisSub      = 1;    % is B a subdifferential ? [0/1]
-Bcoco_value = 1;  % assumed L>0 (possibly Inf)
+Bcoco_value = 1;    % assumed beta>=0 (possibly 0)
 Blips_value = Inf;  % assumed L>0 (possibly Inf)
-Bstrm_value = 0;    % assumed m<L (possibly 0)
+Bstrm_value = 0;    % assumed m<min(L,1/beta) (possibly 0)
 
 CisNonZero  = 1;    % is C active ? [0/1]
 CisSub      = 1;    % is C a subdifferential ? [0/1]
-Ccoco_value = 1;    % assumed L>0 (possibly Inf)
+Ccoco_value = 1;    % assumed beta>=0 (possibly 0)
 Clips_value = Inf;  % assumed L>0 (possibly Inf)
-Cstrm_value = .1;   % assumed m<L (possibly 0)
+Cstrm_value = .1;   % assumed m<min(L,1/beta) (possibly 0)
 
 % EXAMPLES:
 % vanilla gradient method: CisNonZero=1; BisNonZero=0; AisNonZero=0;
@@ -85,7 +85,7 @@ end
 % M matrices for the characteristics; corresponding to constraints of the
 % form (DeltaX DeltaT) M (DeltaX DeltaT)^T >= 0
 
-M_coco = @(L)([0  1/2; 1/2   -1/L]);
+M_coco = @(L)([0  1/2; 1/2   -beta]);
 M_lips = @(L)([1    0;   0   -1/L^2]);
 M_strm = @(m)([-m 1/2; 1/2      0]);
 M_grad = @(m,L)([-m (1+m/L)/2; (1+m/L)/2 -1/L]);
