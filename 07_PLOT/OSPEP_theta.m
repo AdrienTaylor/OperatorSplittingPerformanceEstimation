@@ -5,19 +5,19 @@ function output = OSPEP_theta(alpha, AisNonZero, Acoco_value, Alips_value, Astrm
 % symbolical mode
 
 %AisNonZero   is A active ? [0/1]
-%Acoco_value  assumed beta>0 (possibly 0)
+%Acoco_value  assumed beta>=0 (possibly 0)
 %Alips_value  assumed L>0 (possibly Inf)
-%Astrm_value  assumed m<L (possibly 0)
+%Astrm_value  assumed m<min(L,1/beta) (possibly 0)
 
 %BisNonZero   is B active ? [0/1]
-%Bcoco_value  assumed beta>0 (possibly 0)
+%Bcoco_value  assumed beta>=0 (possibly 0)
 %Blips_value  assumed L>0 (possibly Inf)
-%Bstrm_value  assumed m<L (possibly 0)
+%Bstrm_value  assumed m<min(L,1/beta) (possibly 0)
 
 %CisNonZero   is C active ? [0/1]
-%Ccoco_value  assumed beta>0 (possibly 0)
+%Ccoco_value  assumed beta>=0 (possibly 0)
 %Clips_value  assumed L>0 (possibly Inf)
-%Cstrm_value  assumed m<L (possibly 0)
+%Cstrm_value  assumed m<min(L,1/beta) (possibly 0)
 
 % EXAMPLES:
 % vanilla gradient method: CisNonZero=1; BisNonZero=0; AisNonZero=0;
@@ -139,7 +139,7 @@ cons = cons + (theta <= 2);
 obj = tau;
 
 solver_opt = sdpsettings('solver','mosek','verbose',verbose,'mosek.MSK_DPAR_INTPNT_CO_TOL_PFEAS',tol);
-solverDetails=optimize(cons,obj,solver_opt);
+optimize(cons,obj,solver_opt);
 
 
 

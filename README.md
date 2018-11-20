@@ -7,8 +7,7 @@ This code comes jointly with the following [`reference`](...).
 Date:    ....
 
 TODO:
-update 1/L to beta in matlab code
-
+Write code that compares the bounds of Astronglymonotone_Bcocoercive with SDP solve.
 
 #### Authors
 - [**Ernest Ryu**](http://www.math.ucla.edu/~eryu/)
