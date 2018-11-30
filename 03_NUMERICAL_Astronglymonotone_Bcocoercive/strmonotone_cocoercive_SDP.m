@@ -88,39 +88,45 @@ end
 % form (DeltaX DeltaT) M (DeltaX DeltaT)^T >= 0
 
 M_coco = @(beta)([0  1/2; 1/2   -beta]);
-M_lips = @(L)([1    0;   0   -1/L^2]);
+M_lips = @(L)([L^2    0;   0   -1]);
 M_strm = @(m)([-m 1/2; 1/2      0]);
 M_grad = @(m,L)([-m (1+m/L)/2; (1+m/L)/2 -1/L]);
 
 % Algorithm' notations: (replace zi by xi and yi below)
-%       z1 = J_{alpha*B} z
-%       z2 = J_{alpha*A} (2 z1 - z - alpha C z1)
-%       z+ = z - theta z1 + theta z2
+%       zB = J_{alpha*B} z
+%       zC = alpha C zB
+%       zA = J_{alpha*A} (2 zB - z - zC)
+%       z+ = z - theta ( zB - zA)
 % we also use the following:
-%       DX  =   x - y
-%       DB  = Bx1 - By1
-%       DC  = Cx1 - Cy1
-%       DA  = Ax2 - Ay2
-%       DX1 =  x1 - y1  = DX - alpha * DB
-%       DX2 =  x2 - y2  = 2 * DX1 - DX - alpha * DC - alpha * DA
-%       DXp =  x+ - y+  = DX - theta * DX1 + theta * DX2
-
+%       DA  = (2 zB - z - zC - zA)/alpha
+%       DB  = (z  - zB) / alpha
+%       DC  = zC / alpha
 
 % if all operators are nonzero, the Gram matrix is defined as below:
-%   P = [ DX | DB | DC  | DA]
+%   P = [ z | zA | zB  | zC]
 %   G = P^T * P,
 % whereas if B, C and/or A is zero, we simply discard it in P
 % (i.e., we remove the corresponding column(s)).
 
 dimG = 1 + AisNonZero + BisNonZero + CisNonZero;
-DX   = zeros(1, dimG); DX(1,1) = 1;
-DB   = zeros(1, dimG); DB(1,1+BisNonZero) = BisNonZero;
-DC   = zeros(1, dimG); DC(1,1+BisNonZero+CisNonZero) = CisNonZero;
-DA   = zeros(1, dimG); DA(1,1+BisNonZero+CisNonZero+AisNonZero) = AisNonZero;
+z    = zeros(1, dimG); z(1,1) = 1;
+zC   = zeros(1, dimG); zC(1,1+AisNonZero+BisNonZero+CisNonZero) = CisNonZero;
+if BisNonZero
+    zB = zeros(1, dimG); zB(1,2+AisNonZero) = 1;
+else
+    zB = z;
+end
+if AisNonZero
+    zA = zeros(1, dimG); zA(1,2) = 1;
+else
+    zA = 2*zB - z - zC;
+end
+zp   = z - theta * ( zB - zA);
 
-DX1  = DX - alpha * DB;
-DX2  = 2 * DX1 - DX - alpha * DC - alpha * DA;
-DXp  = DX - theta * DX1 + theta * DX2;
+DA   = (2 * zB - z - zC - zA) / alpha;
+DB   = (z - zB)  / alpha;
+DC   = zC / alpha;
+
 
 %% PEP (dual form)
 
@@ -143,34 +149,41 @@ switch analysis
         lamC = sym('LC%d', [4 1]);
 end
 
-S = - tau * (DX.'*DX) + (DXp.'*DXp); % init. dual matrix
+S = - tau * (z.'*z) + (zp.'*zp); % init. dual matrix
 
 if AisNonZero
     if AisSub
-        S = S + lamA(4) * [DX2; DA].' * M_grad(Astrm,1/Acoco) * [DX2; DA];
+        S = S + lamA(4) * [zA; DA].' * M_grad(Astrm,1/Acoco) * [zA; DA];
     else
-        S = S + lamA(1) * [DX2; DA].' * M_coco(Acoco) * [DX2; DA] ...
-                            + lamA(2) * [DX2; DA].' * M_lips(Alips) * [DX2; DA] ...
-                            + lamA(3) * [DX2; DA].' * M_strm(Astrm) * [DX2; DA];
+        S = S + lamA(1) * [zA; DA].' * M_coco(Acoco) * [zA; DA] ...
+            + lamA(3) * [zA; DA].' * M_strm(Astrm) * [zA; DA];
+        if Alips ~= Inf
+            S = S  + lamA(2) * [zA; DA].' * M_lips(Alips) * [zA; DA];
+        end
+        
     end
 end
 if BisNonZero
     if BisSub
-        S = S + lamB(4) * [DX1; DB].' * M_grad(Bstrm,1/Bcoco) * [DX1; DB];
+        S = S + lamB(4) * [zB; DB].' * M_grad(Bstrm,1/Bcoco) * [zB; DB];
     else
-        S = S + lamB(1) * [DX1; DB].' * M_coco(Bcoco) * [DX1; DB] ...
-                            + lamB(2) * [DX1; DB].' * M_lips(Blips) * [DX1; DB] ...
-                            + lamB(3) * [DX1; DB].' * M_strm(Bstrm) * [DX1; DB];
+        S = S + lamB(1) * [zB; DB].' * M_coco(Bcoco) * [zB; DB] ...
+            + lamB(3) * [zB; DB].' * M_strm(Bstrm) * [zB; DB];
+        if Blips ~= Inf
+            S = S  + lamB(2) * [zB; DB].' * M_lips(Blips) * [zB; DB];
+        end
     end
 end
 
 if CisNonZero
     if CisSub
-        S = S + lamC(4) * [DX1; DC].' * M_grad(Cstrm,1/Ccoco_value) * [DX1; DC];
+        S = S + lamC(4) * [zB; DC].' * M_grad(Cstrm,1/Ccoco_value) * [zB; DC];
     else
-        S = S + lamC(1) * [DX1; DC].' * M_coco(Ccoco) * [DX1; DC] ...
-                            + lamC(2) * [DX1; DC].' * M_lips(Clips) * [DX1; DC] ...
-                            + lamC(3) * [DX1; DC].' * M_strm(Cstrm) * [DX1; DC];
+        S = S + lamC(1) * [zB; DC].' * M_coco(Ccoco) * [zB; DC] ...
+            + lamC(3) * [zB; DC].' * M_strm(Cstrm) * [zB; DC];
+        if Clips ~= Inf
+            S = S  + lamC(2) * [zB; DC].' * M_lips(Clips) * [zB; DC];
+        end
     end
 end
 
