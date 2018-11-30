@@ -1,8 +1,9 @@
 %% Which case should we reproduce ? (type the name of the figure among:
 % - fig1
 % - fig2a, fig2b, fig2c, fig2d, fig2e, fig2f, fig2g, fig2h, fig2i
+% - default (C is strongly monotone and cocoercive)
 clc; clear all;
-namefig    = 'fig2i';
+namefig    = 'default';
 optimalpha = 0; % do we optimize alpha with fminfun? [0/1]
 verbose    = 0; % verbose solver ? [0/1]
 switch namefig
@@ -195,6 +196,24 @@ switch namefig
         
         %Plot range
         yrange = [0.6,1];
+        xrange = [1e-3,1e1];
+    case 'default'
+        AisNonZero = 1;
+        Astrm_value = 0;
+        Acoco_value = 0;
+        Alips_value = inf;
+        
+        BisNonZero = 1;
+        Bstrm_value = 0;
+        Bcoco_value = 0;
+        Blips_value = inf;
+        
+        CisNonZero = 1;
+        Cstrm_value = .1;
+        Ccoco_value = 2;
+        Clips_value = inf;
+
+        yrange = [0.6,1.1];
         xrange = [1e-3,1e1];
 end
 
