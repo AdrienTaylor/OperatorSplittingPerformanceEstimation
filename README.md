@@ -4,10 +4,7 @@ This code comes jointly with the following [`reference`](...).
 
 > [1] ...
 
-Date:    ....
-
-TODO:
-Write code that compares the bounds of Astronglymonotone_Bcocoercive with SDP solve.
+Date:  November 30, 2018
 
 #### Authors
 - [**Ernest Ryu**](http://www.math.ucla.edu/~eryu/)
