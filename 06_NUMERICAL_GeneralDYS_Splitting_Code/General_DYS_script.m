@@ -145,7 +145,7 @@ S = - tau * (DX.'*DX) + (DXp.'*DXp); % init. dual matrix
 
 if AisNonZero
     if AisSub
-        S = S + lamA(4) * [DX2; DA].' * M_grad(Astrm,Acoco) * [DX2; DA];
+        S = S + lamA(4) * [DX2; DA].' * M_grad(Astrm,1/Acoco) * [DX2; DA];
     else
         S = S + lamA(1) * [DX2; DA].' * M_coco(Acoco) * [DX2; DA] ...
                             + lamA(2) * [DX2; DA].' * M_lips(Alips) * [DX2; DA] ...
@@ -154,7 +154,7 @@ if AisNonZero
 end
 if BisNonZero
     if BisSub
-        S = S + lamB(4) * [DX1; DB].' * M_grad(Bstrm,Bcoco) * [DX1; DB];
+        S = S + lamB(4) * [DX1; DB].' * M_grad(Bstrm,1/Bcoco) * [DX1; DB];
     else
         S = S + lamB(1) * [DX1; DB].' * M_coco(Bcoco) * [DX1; DB] ...
                             + lamB(2) * [DX1; DB].' * M_lips(Blips) * [DX1; DB] ...
@@ -164,7 +164,7 @@ end
 
 if CisNonZero
     if CisSub
-        S = S + lamC(4) * [DX1; DC].' * M_grad(Cstrm,Ccoco_value) * [DX1; DC];
+        S = S + lamC(4) * [DX1; DC].' * M_grad(Cstrm,1/Ccoco_value) * [DX1; DC];
     else
         S = S + lamC(1) * [DX1; DC].' * M_coco(Ccoco) * [DX1; DC] ...
                             + lamC(2) * [DX1; DC].' * M_lips(Clips) * [DX1; DC] ...

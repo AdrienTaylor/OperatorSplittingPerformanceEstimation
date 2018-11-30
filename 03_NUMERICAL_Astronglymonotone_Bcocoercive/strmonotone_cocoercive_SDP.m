@@ -1,4 +1,4 @@
-function [WC] = lipschitzstrmonotone(m,L,t,verbose)
+function [WC] = strmonotone_cocoercive_SDP(m,beta,t,verbose)
 
 %% Contraction factor for TOS.
 % clear all; clc;
@@ -29,21 +29,21 @@ theta_value = t;
 
 AisNonZero  = 1;    % is A active ? [0/1]
 AisSub      = 0;    % is A a subdifferential ? [0/1]
-Acoco_value = 0;    % assumed beta>=0 (possibly 0)
-Alips_value = Inf;  % assumed L>0 (possibly Inf)
-Astrm_value = m;    % assumed m<min(L,1/beta) (possibly 0)
+Acoco_value = beta;    % assumed beta>=0 (possibly 0)
+Alips_value = Inf;    % assumed L>0 (possibly Inf)
+Astrm_value = 0;    % assumed m<min(L,1/beta) (possibly 0)
 
 BisNonZero  = 1;    % is B active ? [0/1]
 BisSub      = 0;    % is B a subdifferential ? [0/1]
 Bcoco_value = 0;    % assumed beta>=0 (possibly 0)
-Blips_value = L;    % assumed L>0 (possibly Inf)
-Bstrm_value = 0;    % assumed m<min(L,1/beta) (possibly 0)
+Blips_value = Inf;  % assumed L>0 (possibly Inf)
+Bstrm_value = m;    % assumed m<min(L,1/beta) (possibly 0)
 
 CisNonZero  = 0;    % is C active ? [0/1]
 CisSub      = 0;    % is C a subdifferential ? [0/1]
 Ccoco_value = 0;    % assumed beta>=0 (possibly 0)
 Clips_value = Inf;  % assumed L>0 (possibly Inf)
-Cstrm_value = 0;   % assumed m<min(L,1/beta) (possibly 0)
+Cstrm_value = 0;    % assumed m<min(L,1/beta) (possibly 0)
 
 % EXAMPLES:
 % vanilla gradient method: CisNonZero=1; BisNonZero=0; AisNonZero=0;
@@ -192,6 +192,7 @@ switch analysis
         % as for example removing the unnecessary parameters.
 end
 WC = double(obj);
+
 
 
 
