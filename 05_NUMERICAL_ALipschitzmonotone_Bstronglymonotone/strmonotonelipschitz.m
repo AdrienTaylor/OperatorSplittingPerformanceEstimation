@@ -87,7 +87,7 @@ end
 % M matrices for the characteristics; corresponding to constraints of the
 % form (DeltaX DeltaT) M (DeltaX DeltaT)^T >= 0
 
-M_coco = @(L)([0  1/2; 1/2   -beta]);
+M_coco = @(beta)([0  1/2; 1/2   -beta]);
 M_lips = @(L)([1    0;   0   -1/L^2]);
 M_strm = @(m)([-m 1/2; 1/2      0]);
 M_grad = @(m,L)([-m (1+m/L)/2; (1+m/L)/2 -1/L]);
