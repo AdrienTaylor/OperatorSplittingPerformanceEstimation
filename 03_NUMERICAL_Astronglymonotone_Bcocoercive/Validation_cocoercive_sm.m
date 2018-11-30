@@ -72,7 +72,7 @@ for i = 1:length(m_list)
             [SDP_table(i,j,k)] = strmonotone_cocoercive_SDP(mu,beta,theta,verbose);
 
             cu_comp                 = cu_comp + 1;
-            if nb_fail == 0 && (abs(UB_table(i,j,k)-SDP_table(i,j,k))>tol)
+            if (abs(UB_table(i,j,k)-SDP_table(i,j,k))>tol)
                 nb_fail  = nb_fail+1;
                 b_failed(nb_fail) = beta;
                 t_failed(nb_fail) = theta;

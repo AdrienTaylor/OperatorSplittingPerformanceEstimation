@@ -26,7 +26,7 @@ for i = 1:length(m_list)
             [LS_table(i,j,k)] = lipschitzstrmonotone(mu,L,theta,verbose);
 
             cu_comp                 = cu_comp + 1;
-            if nb_fail == 0 && (abs(SL_table(i,j,k)-LS_table(i,j,k))>tol)
+            if (abs(SL_table(i,j,k)-LS_table(i,j,k))>tol)
                 nb_fail  = nb_fail+1;
                 L_failed(nb_fail) = L;
                 t_failed(nb_fail) = theta;
