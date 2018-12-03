@@ -2,9 +2,9 @@
 
 This code comes jointly with the following [`reference`](...).
 
-> [1] ...
-
-Date:  November 30, 2018
+> [1] E. K. Ryu, A. B. Taylor, C. Bergeling, and P. Giselsson, "Operator Splitting Performance Estimation: Tight contraction factors and optimal parameter selection," arXiv:####.####, 2018.
+ 
+Date:  December 3, 2018
 
 #### Authors
 - [**Ernest Ryu**](http://www.math.ucla.edu/~eryu/)
